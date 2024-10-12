@@ -1,0 +1,105 @@
+---
+title: "SA1"
+author: "Dizon, Kiana Marie"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## 1. Hypothesis Formulation and Rationale (10 points)
+
+We want to determine if there is a significant difference in the mean time spent on cell phones between male and female students per week. The hypothesis can be formulated as:
+
+- Null Hypothesis (\(H_0\)): The mean time spent on cell phones by males and females is the same, \( \mu_1 = \mu_2 \).
+- Alternative Hypothesis (\(H_1\)): The mean time spent on cell phones by males and females is different, \( \mu_1 \neq \mu_2 \).
+
+We will use a two-sample t-test to compare the means because the two samples (males and females) are independent.
+
+## 2. Hypothesis Test Conclusion and p-value (30 points)
+
+We perform a two-sample t-test on the data provided to determine if the means are significantly different.
+
+
+```{r 1 & 2}
+males <- c(12, 4, 11, 13, 11, 11, 7, 9, 10, 7, 10, 10, 9, 6, 9, 15, 11, 12, 7, 8, 10, 11, 12, 7, 8, 9, 8, 11, 9, 11, 10, 9, 9, 7, 7, 8, 11, 12, 8, 8, 12, 8, 11, 10, 10, 10, 8, 10, 13, 13)
+females <- c(9, 7, 10, 9, 7, 10, 7, 10, 7, 9, 9, 6, 11, 8, 9, 9, 12, 14, 12, 12, 8, 12, 9, 10, 11, 7, 9, 8, 11, 9, 12, 13, 8, 13, 8, 10, 11, 9, 11, 7, 9, 11, 8, 9, 11, 9, 12, 11, 8, 11)
+
+t_test_result <- t.test(males, females, alternative = "two.sided", var.equal = FALSE)
+
+t_test_result
+
+```
+Hypothesis Test Conclusion and p-value
+The test provides a p-value which helps us to draw a conclusion:
+
+- If the p-value is less than the significance level (usually 0.05), we reject the null hypothesis.
+- If the p-value is greater than 0.05, we fail to reject the null hypothesis.
+
+Recommendation:
+Based on the p-value, we will provide a recommendation for the researcher whether there is a significant difference between the mean time spent by males and females on cell phones.
+
+## 3. Descriptive Statistical Summaries (10 points)
+We calculate the mean, standard deviation, and sample size for each gender.
+
+```{r 3}
+mean_males <- mean(males)
+mean_females <- mean(females)
+sd_males <- sd(males)
+sd_females <- sd(females)
+n_males <- length(males)
+n_females <- length(females)
+
+summary_statistics <- data.frame(
+  Gender = c("Males", "Females"),
+  Mean = c(mean_males, mean_females),
+  SD = c(sd_males, sd_females),
+  N = c(n_males, n_females)
+)
+
+summary_statistics
+
+```
+
+## 4. 95% Confidence Intervals (10 points)
+We calculate the 95% confidence intervals for the mean of each gender and the difference in means between the two groups.
+```{r 4}
+ci_males <- t.test(males)$conf.int
+
+ci_females <- t.test(females)$conf.int
+
+ci_diff <- t.test(males, females)$conf.int
+
+list(ci_males = ci_males, ci_females = ci_females, ci_diff = ci_diff)
+
+```
+
+## 5. Discussion on Sample Size and Further Testing (20 points)
+The current sample size of 50 males and 50 females provides a decent basis for this analysis. However, larger sample sizes can increase the reliability of the results and provide more generalizability. The variability in cell phone usage may differ across different age groups or regions, so additional testing with more diverse samples would be helpful to confirm the findings.
+
+## 6. Assumptions for Two-Sample T-Test (20 points)
+We check two assumptions for the two-sample t-test:
+
+Normality: The Shapiro-Wilk test is used to check if the data follows a normal distribution.
+
+Homogeneity of Variance: We use the F-test to check if the variances are equal between the two groups.
+
+## Normality Test
+```{r Normality test}
+shapiro_males <- shapiro.test(males)
+shapiro_females <- shapiro.test(females)
+
+shapiro_males
+shapiro_females
+
+```
+## Homogeneity of Variance Test
+
+```{r Homogeneity of Variance Test}
+var_test <- var.test(males, females)
+
+var_test
+
+```
+### Conclusion on Assumptions
+Based on the results of the normality test and the F-test for variances, we conclude whether the assumptions of the t-test are met. If the assumptions are not met, other non-parametric tests such as the Mann-Whitney U test may be considered.
+
+
